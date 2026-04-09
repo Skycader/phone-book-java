@@ -1,7 +1,6 @@
 plugins {
     java
     application
-    id("io.objectbox") version "5.4.1"
 }
 
 group = "com.yamigami"
@@ -12,13 +11,13 @@ repositories {
 }
 
 dependencies {
-    implementation("io.objectbox:objectbox-java:5.4.1")
-    annotationProcessor("io.objectbox:objectbox-processor:5.4.1")
+    // ORMLite JDBC
+    implementation("com.j256.ormlite:ormlite-jdbc:6.1")
 
-    implementation("io.objectbox:objectbox-windows:5.4.1")
-    implementation("io.objectbox:objectbox-linux:5.4.1")
-    implementation("io.objectbox:objectbox-macos:5.4.1")
+    // SQLite драйвер
+    implementation("org.xerial:sqlite-jdbc:3.45.1.0")
 
+    // Логирование (опционально, можно убрать)
     implementation("org.slf4j:slf4j-simple:2.0.9")
 }
 
@@ -29,4 +28,8 @@ application {
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
+}
+
+tasks.named<JavaExec>("run") {
+    standardInput = System.`in`
 }

@@ -1,20 +1,23 @@
 package com.yamigami.phonebook.model;
 
-import io.objectbox.annotation.Entity;
-import io.objectbox.annotation.Id;
-import io.objectbox.annotation.Index;
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 
-@Entity
+@DatabaseTable(tableName = "contacts")
 public class Contact {
-    @Id
+    @DatabaseField(generatedId = true)
     public long id;
 
-    @Index
+    @DatabaseField(canBeNull = false, unique = true, index = true)
     public String phone;
 
+    @DatabaseField(canBeNull = false)
     public String name;
+
+    @DatabaseField
     public String address;
 
+    // ORMLite требует пустой конструктор
     public Contact() {}
 
     public Contact(String phone, String name, String address) {
