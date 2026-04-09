@@ -17,8 +17,8 @@ public class PhoneBookCli {
     }
 
     public void start() {
-        System.out.println("=== Справочник номеров ===");
-        System.out.println("Введите 'help' для списка команд\n");
+        System.out.println("=== Phone Book ===");
+        System.out.println("Type 'help' for available commands\n");
 
         while (running) {
             System.out.print("> ");
@@ -43,43 +43,43 @@ public class PhoneBookCli {
                 case "search" -> handleSearch(args);
                 case "delete" -> handleDelete(args);
                 case "edit" -> handleEdit(args);
-                default -> System.out.println("Неизвестная команда. Введите 'help'.");
+                default -> System.out.println("Unknown command. Type 'help' for usage.");
             }
         } catch (IllegalArgumentException e) {
-            System.out.println("Ошибка: " + e.getMessage());
+            System.out.println("Error: " + e.getMessage());
         } catch (Exception e) {
-            System.out.println("Произошла ошибка: " + e.getMessage());
+            System.out.println("An error occurred: " + e.getMessage());
         }
     }
 
     private void handleAdd(String args) {
         String[] p = args.split("\\s+", 3);
-        if (p.length < 2) throw new IllegalArgumentException("Использование: add <телефон> <ФИО> [адрес]");
+        if (p.length < 2) throw new IllegalArgumentException("Usage: add <phone> <name> [address]");
         String phone = p[0];
         String name = p[1];
         String address = p.length > 2 ? p[2] : "";
         service.addContact(phone, name, address);
-        System.out.println("Контакт успешно добавлен.");
+        System.out.println("Contact added successfully.");
     }
 
     private void handleList(String args) {
         int page = 0;
         if (!args.isEmpty()) {
             try { page = Integer.parseInt(args); }
-            catch (NumberFormatException e) { throw new IllegalArgumentException("Номер страницы должен быть числом."); }
+            catch (NumberFormatException e) { throw new IllegalArgumentException("Page number must be an integer."); }
         }
 
         List<Contact> contacts = service.listPage(page);
         if (contacts.isEmpty()) {
-            System.out.println("Список пуст или страница не существует.");
+            System.out.println("List is empty or page does not exist.");
             return;
         }
 
-        System.out.println("=== Страница " + page + " ===");
+        System.out.println("=== Page " + page + " ===");
         for (Contact c : contacts) {
             System.out.println(c);
         }
-        System.out.println("(Всего страниц: " + service.getTotalPages() + ")");
+        System.out.println("(Total pages: " + service.getTotalPages() + ")");
     }
 
     private void handleSearch(String args) {
@@ -92,37 +92,37 @@ public class PhoneBookCli {
             List<Contact> results = service.searchByName(query);
             printResults(results);
         } else {
-            throw new IllegalArgumentException("Использование: search tel:<...> или search name:<...>");
+            throw new IllegalArgumentException("Usage: search tel:<...> or search name:<...>");
         }
     }
 
     private void handleDelete(String args) {
         if (!args.startsWith("num:")) {
-            throw new IllegalArgumentException("Использование: delete num:<телефон>");
+            throw new IllegalArgumentException("Usage: delete num:<phone>");
         }
         String phone = args.substring(4);
         if (service.deleteContact(phone)) {
-            System.out.println("Контакт удален.");
+            System.out.println("Contact deleted.");
         } else {
-            System.out.println("Контакт не найден.");
+            System.out.println("Contact not found.");
         }
     }
 
     private void handleEdit(String args) {
         String[] p = args.split("\\s+", 3);
         if (p.length < 2 || !p[0].startsWith("num:")) {
-            throw new IllegalArgumentException("Использование: edit num:<телефон> <ФИО> [адрес]");
+            throw new IllegalArgumentException("Usage: edit num:<phone> <name> [address]");
         }
         String phone = p[0].substring(4);
         String name = p[1];
         String address = p.length > 2 ? p[2] : "";
         service.editContact(phone, name, address);
-        System.out.println("Контакт обновлен.");
+        System.out.println("Contact updated.");
     }
 
     private void printResults(List<Contact> contacts) {
         if (contacts.isEmpty()) {
-            System.out.println("Ничего не найдено.");
+            System.out.println("No results found.");
         } else {
             for (Contact c : contacts) {
                 System.out.println(c);
@@ -131,14 +131,14 @@ public class PhoneBookCli {
     }
 
     private void printHelp() {
-        System.out.println("Доступные команды:");
-        System.out.println("  add <телефон> <ФИО> [адрес]      — добавить контакт");
-        System.out.println("  list [страница]                  — показать список (по 5 на странице)");
-        System.out.println("  search tel:<часть номера>        — поиск по телефону");
-        System.out.println("  search name:<часть имени>        — поиск по имени");
-        System.out.println("  delete num:<телефон>             — удалить контакт");
-        System.out.println("  edit num:<телефон> <ФИО> [адрес] — редактировать контакт");
-        System.out.println("  help                             — эта справка");
-        System.out.println("  exit / quit                      — выйти");
+        System.out.println("Available commands:");
+        System.out.println("  add <phone> <name> [address]     - Add a contact");
+        System.out.println("  list [page]                      - Show contacts (5 per page)");
+        System.out.println("  search tel:<part>                - Search by phone");
+        System.out.println("  search name:<part>               - Search by name");
+        System.out.println("  delete num:<phone>               - Delete a contact");
+        System.out.println("  edit num:<phone> <name> [addr]   - Edit a contact");
+        System.out.println("  help                             - Show this help");
+        System.out.println("  exit / quit                      - Exit application");
     }
 }
